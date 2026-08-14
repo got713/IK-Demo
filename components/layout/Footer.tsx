@@ -109,15 +109,36 @@ export default function Footer() {
             <ul className="space-y-4 text-xs sm:text-sm font-light">
               <li className="flex items-start gap-3">
                 <MapPin className="w-4 h-4 text-brand-gold shrink-0 mt-0.5" />
-                <span>{t.footer.address}</span>
+                <div className="flex flex-col gap-1.5">
+                  <a
+                    href="https://maps.app.goo.gl/ZvC1gyHszgrxB3TM7"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="hover:text-brand-gold transition-colors block"
+                  >
+                    {language === "ar" ? "القاهرة: مدينة نصر" : "Cairo: Nasr City"}
+                  </a>
+                  <a
+                    href="https://goo.gl/maps/32K7hJnjN7R2"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="hover:text-brand-gold transition-colors block"
+                  >
+                    {language === "ar" ? "بورسعيد: طرح البحر" : "Port Said: Tarh El Bahr"}
+                  </a>
+                </div>
               </li>
               <li className="flex items-center gap-3">
                 <Phone className="w-4 h-4 text-brand-gold shrink-0" />
-                <span>+20 123 456 7890</span>
+                <a href="tel:01111907667" className="hover:text-brand-gold transition-colors">
+                  011 1190 7667
+                </a>
               </li>
               <li className="flex items-center gap-3">
                 <Mail className="w-4 h-4 text-brand-gold shrink-0" />
-                <span>atelier@ibrahimkhoder.com</span>
+                <a href="mailto:atelier@ibrahimkhoder.com" className="hover:text-brand-gold transition-colors">
+                  atelier@ibrahimkhoder.com
+                </a>
               </li>
             </ul>
           </div>

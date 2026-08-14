@@ -115,14 +115,43 @@ export default function ContactPage() {
             </h2>
 
             <div className="space-y-6">
-              {/* Address */}
+              {/* Cairo Showroom */}
               <div className="flex gap-4">
                 <MapPin className="w-5 h-5 text-brand-gold shrink-0 mt-0.5" />
                 <div className="space-y-1.5 text-xs sm:text-sm">
-                  <span className="font-semibold block uppercase tracking-wider">{t.address_title}</span>
-                  <span className="text-brand-gray font-light leading-relaxed">
-                    {t.address}
+                  <span className="font-semibold block uppercase tracking-wider">
+                    {language === "ar" ? "معرض القاهرة (مدينة نصر)" : "Cairo Showroom (Nasr City)"}
                   </span>
+                  <a
+                    href="https://maps.app.goo.gl/ZvC1gyHszgrxB3TM7"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-brand-gray hover:text-brand-gold transition-colors font-light leading-relaxed block"
+                  >
+                    {language === "ar"
+                      ? "٣٨ شارع حسنين هيكل، موازٍ لعباس العقاد، مدينة نصر، القاهرة"
+                      : "38 Hassanein Heikil Street, parallel to Abbas Al-Akkad, Nasr City, Cairo"}
+                  </a>
+                </div>
+              </div>
+
+              {/* Port Said Showroom */}
+              <div className="flex gap-4">
+                <MapPin className="w-5 h-5 text-brand-gold shrink-0 mt-0.5" />
+                <div className="space-y-1.5 text-xs sm:text-sm">
+                  <span className="font-semibold block uppercase tracking-wider">
+                    {language === "ar" ? "معرض بورسعيد" : "Port Said Showroom"}
+                  </span>
+                  <a
+                    href="https://goo.gl/maps/32K7hJnjN7R2"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-brand-gray hover:text-brand-gold transition-colors font-light leading-relaxed block"
+                  >
+                    {language === "ar"
+                      ? "شارع طرح البحر، قرية مرحبا"
+                      : "Tarh El Bahr Street, Marhaba Village"}
+                  </a>
                 </div>
               </div>
 
@@ -131,7 +160,12 @@ export default function ContactPage() {
                 <Phone className="w-5 h-5 text-brand-gold shrink-0 mt-0.5" />
                 <div className="space-y-1.5 text-xs sm:text-sm">
                   <span className="font-semibold block uppercase tracking-wider">{t.phone_title}</span>
-                  <span className="text-brand-gray font-light">+20 123 456 7890</span>
+                  <a
+                    href="tel:01111907667"
+                    className="text-brand-gray hover:text-brand-gold transition-colors font-light block"
+                  >
+                    011 1190 7667
+                  </a>
                 </div>
               </div>
 
