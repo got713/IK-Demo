@@ -6,9 +6,13 @@ import { products } from "@/data/products";
 import ProductCard from "../product/ProductCard";
 import Button from "../ui/Button";
 import { ArrowRight } from "lucide-react";
+import { useShop } from "@/context/ShopContext";
+import { translations } from "@/data/translations";
 
 export default function FeaturedProducts() {
   const [activeTab, setActiveTab] = useState<"all" | "new" | "best">("all");
+  const { language } = useShop();
+  const t = translations[language].featured;
 
   const filteredProducts = products.filter((product) => {
     if (activeTab === "new") return product.isNew;
@@ -17,9 +21,9 @@ export default function FeaturedProducts() {
   }).slice(0, 4); // Show only top 4 for homepage grids
 
   const tabs = [
-    { id: "all", label: "All Items" },
-    { id: "new", label: "New Arrivals" },
-    { id: "best", label: "Best Sellers" },
+    { id: "all", label: t.all },
+    { id: "new", label: t.new },
+    { id: "best", label: t.best },
   ] as const;
 
   return (
@@ -28,13 +32,13 @@ export default function FeaturedProducts() {
         {/* Title */}
         <div className="text-center space-y-2">
           <span className="text-[10px] sm:text-xs tracking-[0.3em] font-medium text-brand-gold uppercase">
-            Curated Selection
+            {t.subtitle}
           </span>
           <h2 className="font-playfair text-2xl sm:text-4xl tracking-wide uppercase font-medium">
-            Featured Collection
+            {t.title}
           </h2>
           <p className="text-xs sm:text-sm text-brand-gray font-light max-w-md mx-auto">
-            Discover our carefully selected pieces designed for refined styling.
+            {t.desc}
           </p>
         </div>
 
@@ -69,8 +73,8 @@ export default function FeaturedProducts() {
         <div className="text-center pt-4">
           <Link href="/shop" className="inline-block">
             <Button variant="accent" size="md" className="flex items-center gap-2 group text-xs sm:text-sm font-medium">
-              View Entire Collection
-              <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+              {t.view_all}
+              <ArrowRight className={`w-4 h-4 group-hover:translate-x-1 transition-transform ${language === "ar" ? "rotate-180" : ""}`} />
             </Button>
           </Link>
         </div>

@@ -7,11 +7,13 @@ import ProductCard from "@/components/product/ProductCard";
 import { useShop } from "@/context/ShopContext";
 import { X, SlidersHorizontal, Search, Trash2 } from "lucide-react";
 import Button from "@/components/ui/Button";
+import { translations } from "@/data/translations";
 
 function ShopContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
-  const { wishlist } = useShop();
+  const { wishlist, language } = useShop();
+  const t = translations[language].shop_page;
 
   // Local state for filters
   const [selectedCategory, setSelectedCategory] = useState<string>("All");
@@ -49,10 +51,10 @@ function ShopContent() {
 
   // Price ranges
   const priceRanges = [
-    { label: "All Prices", value: "All" },
-    { label: "Under 2,000 EGP", value: "under-2000" },
-    { label: "2,000 - 5,000 EGP", value: "2000-5000" },
-    { label: "Over 5,000 EGP", value: "over-5000" },
+    { label: t.price_ranges.all, value: "All" },
+    { label: t.price_ranges.under, value: "under-2000" },
+    { label: t.price_ranges.between, value: "2000-5000" },
+    { label: t.price_ranges.over, value: "over-5000" },
   ];
 
   // Filtering Logic
@@ -94,10 +96,9 @@ function ShopContent() {
     if (sortBy === "price-high") return b.price - a.price;
     if (sortBy === "rating") return b.rating - a.rating;
     if (sortBy === "newest") {
-      // Sort new arrivals first
       return (b.isNew ? 1 : 0) - (a.isNew ? 1 : 0);
     }
-    return 0; // Default
+    return 0;
   });
 
   const clearFilters = () => {
@@ -108,20 +109,30 @@ function ShopContent() {
     router.push("/shop");
   };
 
+  const getTranslatedCategoryLabel = (cat: string) => {
+    if (cat === "All") return language === "ar" ? "الكل" : "All";
+    if (cat === "Suits") return language === "ar" ? "البدل" : "Suits";
+    if (cat === "Shirts") return language === "ar" ? "القمصان" : "Shirts";
+    if (cat === "Shoes") return language === "ar" ? "الأحذية" : "Shoes";
+    if (cat === "Accessories") return language === "ar" ? "الإكسسوارات" : "Accessories";
+    if (cat === "Wishlist") return t.wishlist_title;
+    return cat;
+  };
+
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 pt-24 sm:pt-32 font-inter text-brand-off-white">
       {/* Page Header */}
       <div className="border-b border-brand-gold/10 pb-8 mb-10 flex flex-col md:flex-row md:items-end justify-between gap-4">
         <div>
           <span className="text-[10px] tracking-[0.3em] font-medium text-brand-gold uppercase block mb-1">
-            Collections
+            {t.subtitle}
           </span>
           <h1 className="font-playfair text-3xl sm:text-4xl tracking-wide uppercase font-medium">
-            {selectedCategory === "Wishlist" ? "My Wishlist" : `${selectedCategory} Collection`}
+            {selectedCategory === "Wishlist" ? t.wishlist_title : `${getTranslatedCategoryLabel(selectedCategory)}`}
           </h1>
         </div>
         <p className="text-xs sm:text-sm text-brand-gray font-light">
-          Showing {sortedProducts.length} premium pieces
+          {t.showing.replace("{count}", sortedProducts.length.toString())}
         </p>
       </div>
 
@@ -132,14 +143,14 @@ function ShopContent() {
         <aside className="hidden lg:block space-y-8 pr-4">
           {/* Search bar */}
           <div className="space-y-2">
-            <h3 className="text-xs tracking-widest text-brand-off-white uppercase font-semibold">Search</h3>
+            <h3 className="text-xs tracking-widest text-brand-off-white uppercase font-semibold">{t.search_lbl}</h3>
             <div className="relative flex items-center bg-brand-soft-black border border-brand-gold/15 focus-within:border-brand-gold rounded-sm px-3 py-2">
               <Search className="w-4 h-4 text-brand-gray mr-2.5 shrink-0" />
               <input
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search products..."
+                placeholder={t.search_placeholder}
                 className="bg-transparent border-0 text-sm placeholder:text-brand-gray/40 w-full focus:ring-0 focus:outline-none"
               />
               {searchQuery && (
@@ -152,7 +163,7 @@ function ShopContent() {
 
           {/* Categories */}
           <div className="space-y-3">
-            <h3 className="text-xs tracking-widest text-brand-off-white uppercase font-semibold">Categories</h3>
+            <h3 className="text-xs tracking-widest text-brand-off-white uppercase font-semibold">{t.categories_lbl}</h3>
             <div className="flex flex-col gap-2.5">
               {categories.map((cat) => (
                 <button
@@ -164,7 +175,7 @@ function ShopContent() {
                       : "text-brand-gray hover:text-brand-off-white"
                   }`}
                 >
-                  {cat}
+                  {getTranslatedCategoryLabel(cat)}
                 </button>
               ))}
             </div>
@@ -172,7 +183,7 @@ function ShopContent() {
 
           {/* Price Filters */}
           <div className="space-y-3">
-            <h3 className="text-xs tracking-widest text-brand-off-white uppercase font-semibold">Price Filter</h3>
+            <h3 className="text-xs tracking-widest text-brand-off-white uppercase font-semibold">{t.price_lbl}</h3>
             <div className="flex flex-col gap-2.5">
               {priceRanges.map((range) => (
                 <button
@@ -194,10 +205,10 @@ function ShopContent() {
           {(selectedCategory !== "All" || selectedPriceRange !== "All" || searchQuery || sortBy !== "default") && (
             <button
               onClick={clearFilters}
-              className="flex items-center justify-center gap-2 border border-brand-gold/25 text-brand-gold hover:bg-brand-gold hover:text-brand-black text-xs tracking-widest uppercase font-medium py-3 px-4 w-full transition-all rounded-sm"
+              className="flex items-center justify-center gap-2 border border-brand-gold/25 text-brand-gold hover:bg-brand-gold hover:text-brand-black text-xs tracking-widest uppercase font-medium py-3 px-4 w-full transition-all rounded-sm cursor-pointer"
             >
               <Trash2 className="w-3.5 h-3.5" />
-              Reset Filters
+              {t.reset_btn}
             </button>
           )}
         </aside>
@@ -212,22 +223,22 @@ function ShopContent() {
               className="lg:hidden flex items-center gap-2.5 bg-brand-soft-black border border-brand-gold/15 px-4 py-2.5 text-xs tracking-widest uppercase font-medium hover:border-brand-gold transition-colors"
             >
               <SlidersHorizontal className="w-4 h-4 text-brand-gold" />
-              Filters
+              {t.filter_btn}
             </button>
 
             {/* Sorting Dropdown */}
             <div className="flex items-center gap-3 ml-auto">
-              <span className="hidden sm:inline text-xs tracking-widest text-brand-gray uppercase">Sort By:</span>
+              <span className="hidden sm:inline text-xs tracking-widest text-brand-gray uppercase">{t.sort_lbl}</span>
               <select
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value)}
                 className="bg-brand-soft-black border border-brand-gold/15 text-xs tracking-wide px-3 py-2 rounded-sm focus:border-brand-gold focus:ring-0 cursor-pointer"
               >
-                <option value="default">Default</option>
-                <option value="price-low">Price: Low to High</option>
-                <option value="price-high">Price: High to Low</option>
-                <option value="rating">Rating</option>
-                <option value="newest">Newest</option>
+                <option value="default">{t.sort_default}</option>
+                <option value="price-low">{t.sort_low}</option>
+                <option value="price-high">{t.sort_high}</option>
+                <option value="rating">{t.sort_rating}</option>
+                <option value="newest">{t.sort_newest}</option>
               </select>
             </div>
           </div>
@@ -236,12 +247,12 @@ function ShopContent() {
           {sortedProducts.length === 0 ? (
             <div className="py-24 text-center space-y-4">
               <SlidersHorizontal className="w-10 h-10 text-brand-gray/30 mx-auto stroke-1 animate-pulse" />
-              <p className="font-playfair text-brand-gray text-lg">No pieces match your selection</p>
+              <p className="font-playfair text-brand-gray text-lg">{t.no_match}</p>
               <p className="text-xs text-brand-gray/60 font-light max-w-sm mx-auto">
-                Try resetting your filters or modifying your search query to find what you are looking for.
+                {t.no_match_desc}
               </p>
               <Button variant="accent" size="sm" onClick={clearFilters}>
-                Clear All Filters
+                {t.reset_btn}
               </Button>
             </div>
           ) : (
@@ -267,7 +278,7 @@ function ShopContent() {
           {/* Drawer Panel */}
           <div className="relative ml-0 mr-auto flex h-full w-[280px] sm:w-[320px] flex-col bg-brand-black border-r border-brand-gold/15 p-6 shadow-xl z-10 text-brand-off-white overflow-y-auto">
             <div className="flex items-center justify-between border-b border-brand-gold/10 pb-4 mb-6">
-              <h2 className="font-playfair text-lg tracking-wider uppercase font-medium">Filter Options</h2>
+              <h2 className="font-playfair text-lg tracking-wider uppercase font-medium">{t.mobile_filter_title}</h2>
               <button onClick={() => setIsMobileFilterOpen(false)} className="p-1">
                 <X className="w-6 h-6" />
               </button>
@@ -276,14 +287,14 @@ function ShopContent() {
             <div className="space-y-8 flex-1">
               {/* Search */}
               <div className="space-y-2.5">
-                <h3 className="text-xs tracking-widest text-brand-off-white uppercase font-semibold">Search</h3>
+                <h3 className="text-xs tracking-widest text-brand-off-white uppercase font-semibold">{t.search_lbl}</h3>
                 <div className="relative flex items-center bg-brand-soft-black border border-brand-gold/15 rounded-sm px-3 py-2">
                   <Search className="w-4 h-4 text-brand-gray mr-2 shrink-0" />
                   <input
                     type="text"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    placeholder="Search..."
+                    placeholder={t.search_placeholder}
                     className="bg-transparent border-0 text-xs w-full focus:ring-0 focus:outline-none"
                   />
                 </div>
@@ -291,7 +302,7 @@ function ShopContent() {
 
               {/* Categories */}
               <div className="space-y-3.5">
-                <h3 className="text-xs tracking-widest text-brand-off-white uppercase font-semibold">Categories</h3>
+                <h3 className="text-xs tracking-widest text-brand-off-white uppercase font-semibold">{t.categories_lbl}</h3>
                 <div className="flex flex-col gap-3">
                   {categories.map((cat) => (
                     <button
@@ -306,7 +317,7 @@ function ShopContent() {
                           : "text-brand-gray"
                       }`}
                     >
-                      {cat}
+                      {getTranslatedCategoryLabel(cat)}
                     </button>
                   ))}
                 </div>
@@ -314,7 +325,7 @@ function ShopContent() {
 
               {/* Price Ranges */}
               <div className="space-y-3.5">
-                <h3 className="text-xs tracking-widest text-brand-off-white uppercase font-semibold">Price Filter</h3>
+                <h3 className="text-xs tracking-widest text-brand-off-white uppercase font-semibold">{t.price_lbl}</h3>
                 <div className="flex flex-col gap-3">
                   {priceRanges.map((range) => (
                     <button
@@ -344,9 +355,9 @@ function ShopContent() {
                     clearFilters();
                     setIsMobileFilterOpen(false);
                   }}
-                  className="flex items-center justify-center gap-2 border border-brand-gold/20 text-brand-gold py-3 px-4 w-full text-xs tracking-widest uppercase font-medium rounded-sm"
+                  className="flex items-center justify-center gap-2 border border-brand-gold/20 text-brand-gold py-3 px-4 w-full text-xs tracking-widest uppercase font-medium rounded-sm cursor-pointer"
                 >
-                  Reset All Filters
+                  {t.reset_btn}
                 </button>
               </div>
             )}

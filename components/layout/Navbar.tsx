@@ -7,12 +7,13 @@ import { Search, User, Heart, ShoppingBag, Menu } from "lucide-react";
 import { useShop } from "@/context/ShopContext";
 import Logo from "./Logo";
 import MobileMenu from "./MobileMenu";
+import { translations } from "@/data/translations";
 
 export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const pathname = usePathname();
-  const { cart, wishlist, setCartOpen, setSearchOpen } = useShop();
+  const { cart, wishlist, setCartOpen, setSearchOpen, language, setLanguage } = useShop();
 
   const isHomepage = pathname === "/";
 
@@ -37,11 +38,11 @@ export default function Navbar() {
   const wishlistCount = wishlist.length;
 
   const navLinks = [
-    { label: "Home", href: "/" },
-    { label: "Shop", href: "/shop" },
-    { label: "Collections", href: "/#collections" },
-    { label: "About", href: "/about" },
-    { label: "Contact", href: "/contact" },
+    { label: translations[language].nav.home, href: "/" },
+    { label: translations[language].nav.shop, href: "/shop" },
+    { label: translations[language].nav.collections, href: "/#collections" },
+    { label: translations[language].nav.about, href: "/about" },
+    { label: translations[language].nav.contact, href: "/contact" },
   ];
 
   return (
@@ -117,6 +118,15 @@ export default function Navbar() {
                   {cartCount}
                 </span>
               )}
+            </button>
+
+            {/* Language Toggle */}
+            <button
+              onClick={() => setLanguage(language === "en" ? "ar" : "en")}
+              className="text-[10px] sm:text-xs tracking-widest text-brand-off-white hover:text-brand-gold transition-colors p-1.5 font-bold font-inter cursor-pointer"
+              aria-label="Toggle Language"
+            >
+              {translations[language].common.lang_toggle}
             </button>
 
             {/* Hamburger Menu (Mobile) */}

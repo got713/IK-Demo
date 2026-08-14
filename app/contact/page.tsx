@@ -4,9 +4,12 @@ import { useState } from "react";
 import { useShop } from "@/context/ShopContext";
 import Button from "@/components/ui/Button";
 import { MapPin, Phone, Mail, Clock } from "lucide-react";
+import { translations } from "@/data/translations";
 
 export default function ContactPage() {
-  const { addToast } = useShop();
+  const { addToast, language } = useShop();
+  const t = translations[language].contact_page;
+
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
@@ -15,10 +18,10 @@ export default function ContactPage() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!name || !email || !message) {
-      addToast("Please fill in all required fields", "error");
+      addToast(language === "ar" ? "يرجى ملء جميع الحقول المطلوبة" : "Please fill in all required fields", "error");
       return;
     }
-    addToast("Thank you. Our concierge will contact you shortly.", "success");
+    addToast(language === "ar" ? "نشكرك. سيقوم منسق الخدمة بالتواصل معك قريباً." : "Thank you. Our concierge will contact you shortly.", "success");
     setName("");
     setEmail("");
     setPhone("");
@@ -30,13 +33,13 @@ export default function ContactPage() {
       {/* Header */}
       <div className="border-b border-brand-gold/10 pb-8 mb-16 text-center sm:text-left">
         <span className="text-[10px] tracking-[0.4em] font-medium text-brand-gold uppercase block mb-2">
-          Concierge
+          {t.subtitle}
         </span>
         <h1 className="font-playfair text-3xl sm:text-5xl tracking-wide uppercase font-semibold">
-          Get In Touch
+          {t.title}
         </h1>
         <p className="text-xs sm:text-base text-brand-gray font-light max-w-xl mt-3 leading-relaxed">
-          Reach out to our Zamalek atelier for private styling appointments, customized orders, or general inquiries.
+          {t.desc}
         </p>
       </div>
 
@@ -45,12 +48,12 @@ export default function ContactPage() {
         <div className="lg:col-span-7 bg-brand-soft-black/20 border border-brand-gold/10 p-6 sm:p-8 rounded-sm">
           <form onSubmit={handleSubmit} className="space-y-6">
             <h2 className="font-playfair text-xl uppercase tracking-wider text-brand-gold mb-6">
-              Send a Message
+              {t.form_title}
             </h2>
             
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
               <div className="space-y-2">
-                <label className="text-[10px] tracking-widest text-brand-gray uppercase block font-medium">Your Name *</label>
+                <label className="text-[10px] tracking-widest text-brand-gray uppercase block font-medium">{t.name}</label>
                 <input
                   type="text"
                   value={name}
@@ -61,7 +64,7 @@ export default function ContactPage() {
                 />
               </div>
               <div className="space-y-2">
-                <label className="text-[10px] tracking-widest text-brand-gray uppercase block font-medium">Email Address *</label>
+                <label className="text-[10px] tracking-widest text-brand-gray uppercase block font-medium">{t.email}</label>
                 <input
                   type="email"
                   value={email}
@@ -74,7 +77,7 @@ export default function ContactPage() {
             </div>
 
             <div className="space-y-2">
-              <label className="text-[10px] tracking-widest text-brand-gray uppercase block font-medium">Phone Number</label>
+              <label className="text-[10px] tracking-widest text-brand-gray uppercase block font-medium">{t.phone}</label>
               <input
                 type="tel"
                 value={phone}
@@ -85,19 +88,19 @@ export default function ContactPage() {
             </div>
 
             <div className="space-y-2">
-              <label className="text-[10px] tracking-widest text-brand-gray uppercase block font-medium">Message *</label>
+              <label className="text-[10px] tracking-widest text-brand-gray uppercase block font-medium">{t.message}</label>
               <textarea
                 rows={5}
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
-                placeholder="How can we assist you? (E.g., booking a tailoring consultation...)"
+                placeholder={t.message_placeholder}
                 className="w-full bg-brand-black border border-brand-gold/15 text-xs sm:text-sm px-4 py-3 focus:border-brand-gold rounded-sm focus:ring-0 focus:outline-none resize-none"
                 required
               />
             </div>
 
             <Button variant="primary" type="submit" className="w-full py-4 text-xs font-semibold">
-              Send Message
+              {t.submit}
             </Button>
           </form>
         </div>
@@ -108,7 +111,7 @@ export default function ContactPage() {
           {/* Atelier Info */}
           <div className="space-y-8">
             <h2 className="font-playfair text-xl uppercase tracking-wider text-brand-gold border-b border-brand-gold/10 pb-2">
-              The Atelier
+              {t.atelier_title}
             </h2>
 
             <div className="space-y-6">
@@ -116,10 +119,9 @@ export default function ContactPage() {
               <div className="flex gap-4">
                 <MapPin className="w-5 h-5 text-brand-gold shrink-0 mt-0.5" />
                 <div className="space-y-1.5 text-xs sm:text-sm">
-                  <span className="font-semibold block uppercase tracking-wider">Showroom Address</span>
+                  <span className="font-semibold block uppercase tracking-wider">{t.address_title}</span>
                   <span className="text-brand-gray font-light leading-relaxed">
-                    12 Al-Salih Ayoub St, Zamalek, <br />
-                    Cairo, Egypt
+                    {t.address}
                   </span>
                 </div>
               </div>
@@ -128,7 +130,7 @@ export default function ContactPage() {
               <div className="flex gap-4">
                 <Phone className="w-5 h-5 text-brand-gold shrink-0 mt-0.5" />
                 <div className="space-y-1.5 text-xs sm:text-sm">
-                  <span className="font-semibold block uppercase tracking-wider">Concierge Phone</span>
+                  <span className="font-semibold block uppercase tracking-wider">{t.phone_title}</span>
                   <span className="text-brand-gray font-light">+20 123 456 7890</span>
                 </div>
               </div>
@@ -137,7 +139,7 @@ export default function ContactPage() {
               <div className="flex gap-4">
                 <Mail className="w-5 h-5 text-brand-gold shrink-0 mt-0.5" />
                 <div className="space-y-1.5 text-xs sm:text-sm">
-                  <span className="font-semibold block uppercase tracking-wider">General Inquiry</span>
+                  <span className="font-semibold block uppercase tracking-wider">{t.email_title}</span>
                   <span className="text-brand-gray font-light">atelier@ibrahimkhoder.com</span>
                 </div>
               </div>
@@ -146,10 +148,9 @@ export default function ContactPage() {
               <div className="flex gap-4">
                 <Clock className="w-5 h-5 text-brand-gold shrink-0 mt-0.5" />
                 <div className="space-y-1.5 text-xs sm:text-sm">
-                  <span className="font-semibold block uppercase tracking-wider">Hours of Operation</span>
-                  <span className="text-brand-gray font-light leading-relaxed">
-                    Saturday — Thursday: 11:00 AM — 9:00 PM <br />
-                    Friday: Private Consultations Only
+                  <span className="font-semibold block uppercase tracking-wider">{t.hours_title}</span>
+                  <span className="text-brand-gray font-light leading-relaxed whitespace-pre-line">
+                    {t.hours}
                   </span>
                 </div>
               </div>
@@ -159,7 +160,7 @@ export default function ContactPage() {
           {/* Slogan */}
           <div className="border border-brand-gold/10 p-6 rounded-sm bg-brand-soft-black/20 text-center">
             <p className="font-playfair italic text-brand-gray text-xs sm:text-sm leading-relaxed">
-              &ldquo;Discover style defined not by what is brief, but by what endures.&rdquo;
+              {t.slogan}
             </p>
           </div>
 

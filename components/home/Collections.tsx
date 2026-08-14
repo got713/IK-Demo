@@ -3,24 +3,29 @@
 import Link from "next/link";
 import Image from "next/image";
 import { ArrowRight } from "lucide-react";
+import { useShop } from "@/context/ShopContext";
+import { translations } from "@/data/translations";
 
 export default function Collections() {
+  const { language } = useShop();
+  const t = translations[language].categories;
+
   const collectionCards = [
     {
-      title: "Men",
-      subtitle: "Tailored Modernity",
+      title: t.men_title,
+      subtitle: t.men_sub,
       image: "/images/collection-men.jpg",
       href: "/shop?category=Suits",
     },
     {
-      title: "Women",
-      subtitle: "Elegant Minimalism",
+      title: t.women_title,
+      subtitle: t.women_sub,
       image: "/images/collection-women.jpg",
       href: "/shop?category=Shirts",
     },
     {
-      title: "New Arrivals",
-      subtitle: "Season 2026 Collection",
+      title: t.new_title,
+      subtitle: t.new_sub,
       image: "/images/collection-new.jpg",
       href: "/shop?filter=new",
     },
@@ -32,13 +37,13 @@ export default function Collections() {
         {/* Title */}
         <div className="text-center space-y-2">
           <span className="text-[10px] sm:text-xs tracking-[0.3em] font-medium text-brand-gold uppercase">
-            Curated Categories
+            {t.subtitle}
           </span>
           <h2 className="font-playfair text-2xl sm:text-4xl tracking-wide uppercase font-medium">
-            Explore Collections
+            {t.title}
           </h2>
           <p className="text-xs sm:text-sm text-brand-gray font-light max-w-md mx-auto">
-            Discover bespoke ranges designed to match your individual style.
+            {t.desc}
           </p>
         </div>
 
@@ -76,8 +81,8 @@ export default function Collections() {
                 
                 {/* Explore CTA (Appears on Hover) */}
                 <div className="flex items-center gap-1.5 text-xs font-semibold tracking-widest text-brand-gold uppercase pt-2 opacity-0 -translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300">
-                  Explore Collection
-                  <ArrowRight className="w-3.5 h-3.5" />
+                  {t.explore}
+                  <ArrowRight className={`w-3.5 h-3.5 ${language === "ar" ? "rotate-180" : ""}`} />
                 </div>
               </div>
             </Link>

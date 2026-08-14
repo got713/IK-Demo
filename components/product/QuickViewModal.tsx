@@ -9,6 +9,7 @@ import { useShop } from "@/context/ShopContext";
 import { formatCurrency } from "@/lib/formatCurrency";
 import { motion, AnimatePresence } from "framer-motion";
 import Button from "../ui/Button";
+import { translations } from "@/data/translations";
 
 interface QuickViewModalProps {
   product: Product;
@@ -17,10 +18,11 @@ interface QuickViewModalProps {
 }
 
 export default function QuickViewModal({ product, isOpen, onClose }: QuickViewModalProps) {
-  const { addToCart, toggleWishlist, isInWishlist } = useShop();
+  const { addToCart, toggleWishlist, isInWishlist, language } = useShop();
   const [selectedColor, setSelectedColor] = useState("");
   const [selectedSize, setSelectedSize] = useState("");
   const [quantity, setQuantity] = useState(1);
+  const t = translations[language].product_page;
 
   // Reset selections when the modal opens or changes products
   useEffect(() => {
@@ -40,6 +42,14 @@ export default function QuickViewModal({ product, isOpen, onClose }: QuickViewMo
 
   const incrementQty = () => setQuantity((prev) => prev + 1);
   const decrementQty = () => setQuantity((prev) => (prev > 1 ? prev - 1 : 1));
+
+  const getTranslatedCategory = (cat: string) => {
+    if (cat === "Suits") return language === "ar" ? "بدل" : "Suits";
+    if (cat === "Shirts") return language === "ar" ? "قمصان" : "Shirts";
+    if (cat === "Shoes") return language === "ar" ? "أحذية" : "Shoes";
+    if (cat === "Accessories") return language === "ar" ? "إكسسوارات" : "Accessories";
+    return cat;
+  };
 
   return (
     <AnimatePresence>
@@ -66,7 +76,7 @@ export default function QuickViewModal({ product, isOpen, onClose }: QuickViewMo
               {/* Close Button */}
               <button
                 onClick={onClose}
-                className="absolute top-4 right-4 z-10 p-1.5 rounded-full bg-brand-soft-black text-brand-off-white hover:text-brand-gold border border-brand-gold/5 transition-colors"
+                className="absolute top-4 right-4 z-10 p-1.5 rounded-full bg-brand-soft-black text-brand-off-white hover:text-brand-gold border border-brand-gold/5 transition-colors cursor-pointer"
                 aria-label="Close"
               >
                 <X className="w-5 h-5" />
@@ -86,7 +96,9 @@ export default function QuickViewModal({ product, isOpen, onClose }: QuickViewMo
               {/* Product Info Section */}
               <div className="w-full md:w-1/2 p-6 sm:p-8 flex flex-col justify-between">
                 <div>
-                  <span className="text-[10px] tracking-widest text-brand-gray uppercase">{product.category}</span>
+                  <span className="text-[10px] tracking-widest text-brand-gray uppercase">
+                    {getTranslatedCategory(product.category)}
+                  </span>
                   <h2 className="font-playfair text-xl sm:text-2xl tracking-wide text-brand-off-white mt-1 mb-2 font-medium">
                     {product.name}
                   </h2>
@@ -126,14 +138,14 @@ export default function QuickViewModal({ product, isOpen, onClose }: QuickViewMo
                   {/* Color Selector */}
                   <div className="mb-5">
                     <span className="text-xs tracking-widest text-brand-off-white uppercase font-medium block mb-2.5">
-                      Color: {selectedColor}
+                      {t.color_lbl}: {selectedColor}
                     </span>
                     <div className="flex gap-2">
                       {product.colors.map((color) => (
                         <button
                           key={color}
                           onClick={() => setSelectedColor(color)}
-                          className={`px-3 py-1.5 text-xs font-inter tracking-wider border rounded-sm transition-all ${
+                          className={`px-3 py-1.5 text-xs font-inter tracking-wider border rounded-sm transition-all cursor-pointer ${
                             selectedColor === color
                               ? "border-brand-gold text-brand-gold bg-brand-gold/5"
                               : "border-brand-gray/30 text-brand-gray hover:border-brand-off-white/50"
@@ -148,14 +160,14 @@ export default function QuickViewModal({ product, isOpen, onClose }: QuickViewMo
                   {/* Size Selector */}
                   <div className="mb-6">
                     <span className="text-xs tracking-widest text-brand-off-white uppercase font-medium block mb-2.5">
-                      Size: {selectedSize}
+                      {t.size_lbl}: {selectedSize}
                     </span>
                     <div className="flex gap-2 flex-wrap">
                       {product.sizes.map((size) => (
                         <button
                           key={size}
                           onClick={() => setSelectedSize(size)}
-                          className={`min-w-[40px] px-2.5 py-1.5 text-xs font-inter border rounded-sm transition-all ${
+                          className={`min-w-[40px] px-2.5 py-1.5 text-xs font-inter border rounded-sm transition-all cursor-pointer ${
                             selectedSize === size
                               ? "border-brand-gold text-brand-gold bg-brand-gold/5"
                               : "border-brand-gray/30 text-brand-gray hover:border-brand-off-white/50"
@@ -175,7 +187,7 @@ export default function QuickViewModal({ product, isOpen, onClose }: QuickViewMo
                     <div className="flex items-center bg-brand-soft-black border border-brand-gold/10 rounded-sm">
                       <button
                         onClick={decrementQty}
-                        className="p-2.5 text-brand-gray hover:text-brand-off-white transition-colors"
+                        className="p-2.5 text-brand-gray hover:text-brand-off-white transition-colors cursor-pointer"
                         aria-label="Decrease quantity"
                       >
                         <Minus className="w-4 h-4" />
@@ -185,7 +197,7 @@ export default function QuickViewModal({ product, isOpen, onClose }: QuickViewMo
                       </span>
                       <button
                         onClick={incrementQty}
-                        className="p-2.5 text-brand-gray hover:text-brand-off-white transition-colors"
+                        className="p-2.5 text-brand-gray hover:text-brand-off-white transition-colors cursor-pointer"
                         aria-label="Increase quantity"
                       >
                         <Plus className="w-4 h-4" />
@@ -195,7 +207,7 @@ export default function QuickViewModal({ product, isOpen, onClose }: QuickViewMo
                     {/* Wishlist Button */}
                     <button
                       onClick={() => toggleWishlist(product.id)}
-                      className={`p-3 rounded-sm border transition-all ${
+                      className={`p-3 rounded-sm border transition-all cursor-pointer ${
                         isFavorite
                           ? "border-brand-gold bg-brand-gold/5 text-brand-gold"
                           : "border-brand-gray/30 text-brand-gray hover:border-brand-off-white hover:text-brand-off-white"
@@ -209,14 +221,14 @@ export default function QuickViewModal({ product, isOpen, onClose }: QuickViewMo
                   {/* Add to Cart CTA */}
                   <div className="flex flex-col gap-3">
                     <Button variant="primary" onClick={handleAddToCart} className="w-full py-4 text-xs font-medium">
-                      Add to Cart
+                      {t.add_to_cart}
                     </Button>
                     <Link
                       href={`/product/${product.id}`}
                       onClick={onClose}
                       className="text-center text-xs tracking-widest text-brand-gray hover:text-brand-gold transition-colors font-inter uppercase block mt-2"
                     >
-                      View Full Details
+                      {language === "ar" ? "عرض التفاصيل الكاملة" : "View Full Details"}
                     </Link>
                   </div>
                 </div>

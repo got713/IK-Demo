@@ -7,9 +7,11 @@ import Image from "next/image";
 import Link from "next/link";
 import { formatCurrency } from "@/lib/formatCurrency";
 import Button from "../ui/Button";
+import { translations } from "@/data/translations";
 
 export default function CartDrawer() {
-  const { cart, isCartOpen, setCartOpen, updateQuantity, removeFromCart } = useShop();
+  const { cart, isCartOpen, setCartOpen, updateQuantity, removeFromCart, language } = useShop();
+  const t = translations[language].cart_page;
 
   const cartSubtotal = cart.reduce((total, item) => total + item.product.price * item.quantity, 0);
 
@@ -38,7 +40,7 @@ export default function CartDrawer() {
             <div className="p-6 border-b border-brand-gold/10 flex items-center justify-between">
               <div className="flex items-center gap-2.5">
                 <ShoppingBag className="w-5 h-5 text-brand-gold" />
-                <h2 className="font-playfair text-lg tracking-wider uppercase font-medium">Your Bag</h2>
+                <h2 className="font-playfair text-lg tracking-wider uppercase font-medium">{t.title}</h2>
                 <span className="text-xs text-brand-gray bg-brand-soft-black border border-brand-gold/5 px-2 py-0.5 rounded-full">
                   {cart.reduce((sum, item) => sum + item.quantity, 0)}
                 </span>
@@ -56,10 +58,10 @@ export default function CartDrawer() {
               {cart.length === 0 ? (
                 <div className="h-full flex flex-col items-center justify-center text-center space-y-4">
                   <ShoppingBag className="w-10 h-10 text-brand-gray/40 stroke-1" />
-                  <p className="font-playfair tracking-wide text-brand-gray">Your shopping bag is empty</p>
+                  <p className="font-playfair tracking-wide text-brand-gray">{t.empty}</p>
                   <Link href="/shop" onClick={() => setCartOpen(false)}>
                     <Button variant="accent" size="sm">
-                      Shop New Collection
+                      {t.btn}
                     </Button>
                   </Link>
                 </div>
@@ -104,8 +106,8 @@ export default function CartDrawer() {
                           {item.product.category}
                         </p>
                         <div className="flex gap-3 text-xs text-brand-gray mt-1">
-                          <span>Size: <strong className="text-brand-off-white font-normal">{item.selectedSize}</strong></span>
-                          <span>Color: <strong className="text-brand-off-white font-normal">{item.selectedColor}</strong></span>
+                          <span>{language === "ar" ? "المقاس: " : "Size: "}<strong className="text-brand-off-white font-normal">{item.selectedSize}</strong></span>
+                          <span>{language === "ar" ? "اللون: " : "Color: "}<strong className="text-brand-off-white font-normal">{item.selectedColor}</strong></span>
                         </div>
                       </div>
 
@@ -144,23 +146,23 @@ export default function CartDrawer() {
             {cart.length > 0 && (
               <div className="p-6 border-t border-brand-gold/10 bg-brand-soft-black/40 space-y-4">
                 <div className="flex justify-between items-baseline">
-                  <span className="text-xs tracking-widest text-brand-gray uppercase">Subtotal</span>
+                  <span className="text-xs tracking-widest text-brand-gray uppercase">{t.summary.subtotal}</span>
                   <span className="text-lg font-semibold text-brand-gold tracking-wider">
                     {formatCurrency(cartSubtotal)}
                   </span>
                 </div>
                 <p className="text-[10px] text-brand-gray font-light">
-                  Shipping and taxes calculated at checkout.
+                  {language === "ar" ? "يتم احتساب رسوم الشحن عند الدفع." : "Shipping and taxes calculated at checkout."}
                 </p>
                 <div className="flex flex-col gap-2 pt-2">
                   <Link href="/checkout" onClick={() => setCartOpen(false)}>
                     <Button variant="primary" className="w-full py-4 text-xs font-semibold">
-                      Proceed to Checkout
+                      {t.summary.checkout_btn}
                     </Button>
                   </Link>
                   <Link href="/cart" onClick={() => setCartOpen(false)}>
                     <Button variant="secondary" className="w-full py-4 text-xs font-semibold">
-                      View Cart Details
+                      {language === "ar" ? "عرض تفاصيل السلة" : "View Cart Details"}
                     </Button>
                   </Link>
                 </div>

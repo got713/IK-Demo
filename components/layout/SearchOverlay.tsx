@@ -9,12 +9,14 @@ import { X, Search, ArrowRight } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import { formatCurrency } from "@/lib/formatCurrency";
+import { translations } from "@/data/translations";
 
 export default function SearchOverlay() {
-  const { isSearchOpen, setSearchOpen } = useShop();
+  const { isSearchOpen, setSearchOpen, language } = useShop();
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<Product[]>([]);
   const inputRef = useRef<HTMLInputElement>(null);
+  const t = translations[language].shop_page;
 
   // Focus input on open
   useEffect(() => {
@@ -68,9 +70,11 @@ export default function SearchOverlay() {
           <div className="max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-6 flex justify-end">
             <button
               onClick={() => setSearchOpen(false)}
-              className="text-brand-gray hover:text-brand-off-white transition-colors p-2 flex items-center gap-2 border border-transparent hover:border-brand-gold/15 rounded-sm"
+              className="text-brand-gray hover:text-brand-off-white transition-colors p-2 flex items-center gap-2 border border-transparent hover:border-brand-gold/15 rounded-sm cursor-pointer"
             >
-              <span className="text-xs uppercase tracking-widest hidden sm:inline">Close</span>
+              <span className="text-xs uppercase tracking-widest hidden sm:inline">
+                {language === "ar" ? "إغلاق" : "Close"}
+              </span>
               <X className="w-6 h-6" />
             </button>
           </div>
@@ -84,7 +88,7 @@ export default function SearchOverlay() {
                 type="text"
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
-                placeholder="What are you looking for?"
+                placeholder={language === "ar" ? "ما الذي تبحث عنه؟" : "What are you looking for?"}
                 className="bg-transparent border-0 text-xl sm:text-3xl font-playfair tracking-wide text-brand-off-white placeholder:text-brand-gray/40 w-full focus:ring-0 focus:outline-none"
               />
             </div>
@@ -100,7 +104,7 @@ export default function SearchOverlay() {
                     className="space-y-6"
                   >
                     <h3 className="text-xs tracking-[0.2em] font-medium text-brand-gray uppercase mb-4">
-                      Search Results
+                      {language === "ar" ? "نتائج البحث" : "Search Results"}
                     </h3>
                     <div className="space-y-4">
                       {results.map((product) => (
@@ -130,7 +134,7 @@ export default function SearchOverlay() {
                             <span className="text-xs sm:text-sm font-semibold text-brand-gold">
                               {formatCurrency(product.price)}
                             </span>
-                            <ArrowRight className="w-4 h-4 text-brand-gray/40 group-hover:text-brand-gold group-hover:translate-x-1 transition-all" />
+                            <ArrowRight className={`w-4 h-4 text-brand-gray/40 group-hover:text-brand-gold group-hover:translate-x-1 transition-all ${language === "ar" ? "rotate-180" : ""}`} />
                           </div>
                         </Link>
                       ))}
@@ -142,8 +146,8 @@ export default function SearchOverlay() {
                         onClick={() => setSearchOpen(false)}
                         className="text-xs tracking-widest text-brand-gold hover:text-brand-gold-light uppercase font-semibold transition-colors flex items-center justify-center gap-2 group"
                       >
-                        See All Matching Products
-                        <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+                        {language === "ar" ? "عرض جميع المنتجات المطابقة" : "See All Matching Products"}
+                        <ArrowRight className={`w-3.5 h-3.5 group-hover:translate-x-1 transition-transform ${language === "ar" ? "rotate-180" : ""}`} />
                       </Link>
                     </div>
                   </motion.div>
@@ -156,8 +160,12 @@ export default function SearchOverlay() {
                     exit={{ opacity: 0 }}
                     className="text-center py-12 space-y-3"
                   >
-                    <p className="font-playfair text-brand-gray text-lg">No products found for &ldquo;{query}&rdquo;</p>
-                    <p className="text-xs text-brand-gray/60 font-light">Try searching for other terms like &ldquo;Suit&rdquo;, &ldquo;Shirt&rdquo;, or &ldquo;Leather&rdquo;.</p>
+                    <p className="font-playfair text-brand-gray text-lg">
+                      {language === "ar" ? `لا توجد نتائج بحث لـ "${query}"` : `No products found for "${query}"`}
+                    </p>
+                    <p className="text-xs text-brand-gray/60 font-light">
+                      {language === "ar" ? "جرّب كلمات مثل \"بدلة\" أو \"قميص\" أو \"جلد\"." : "Try searching for other terms like \"Suit\", \"Shirt\", or \"Leather\"."}
+                    </p>
                   </motion.div>
                 )}
 
@@ -169,23 +177,31 @@ export default function SearchOverlay() {
                   >
                     <div>
                       <h4 className="text-xs tracking-[0.2em] font-medium text-brand-gray uppercase mb-4">
-                        Popular Suggestions
+                        {language === "ar" ? "المقترحات الشائعة" : "Popular Suggestions"}
                       </h4>
                       <div className="flex flex-col gap-3 text-sm sm:text-base">
                         {["Tailored Suit", "Linen Shirt", "Leather Oxford Shoes", "Chronograph Watch"].map((term) => (
                           <button
                             key={term}
                             onClick={() => setQuery(term)}
-                            className="text-left text-brand-off-white hover:text-brand-gold transition-colors font-playfair py-1"
+                            className="text-left text-brand-off-white hover:text-brand-gold transition-colors font-playfair py-1 cursor-pointer"
                           >
-                            {term}
+                            {language === "ar"
+                              ? term === "Tailored Suit"
+                                ? "بدلة مفصلة"
+                                : term === "Linen Shirt"
+                                ? "قميص كتان"
+                                : term === "Leather Oxford Shoes"
+                                ? "حذاء أكسفورد جلدي"
+                                : "ساعة كرونوغراف"
+                              : term}
                           </button>
                         ))}
                       </div>
                     </div>
                     <div>
                       <h4 className="text-xs tracking-[0.2em] font-medium text-brand-gray uppercase mb-4">
-                        Browse by Category
+                        {language === "ar" ? "تصفح حسب الفئة" : "Browse by Category"}
                       </h4>
                       <div className="flex flex-col gap-3 text-sm sm:text-base">
                         {["Suits", "Shirts", "Shoes", "Accessories"].map((cat) => (
@@ -195,7 +211,15 @@ export default function SearchOverlay() {
                             onClick={() => setSearchOpen(false)}
                             className="text-brand-off-white hover:text-brand-gold transition-colors font-playfair py-1"
                           >
-                            {cat}
+                            {language === "ar"
+                              ? cat === "Suits"
+                                ? "بدل"
+                                : cat === "Shirts"
+                                ? "قمصان"
+                                : cat === "Shoes"
+                                ? "أحذية"
+                                : "إكسسوارات"
+                              : cat}
                           </Link>
                         ))}
                       </div>

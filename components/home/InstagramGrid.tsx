@@ -1,7 +1,14 @@
+"use client";
+
 import Image from "next/image";
 import { Instagram } from "lucide-react";
+import { useShop } from "@/context/ShopContext";
+import { translations } from "@/data/translations";
 
 export default function InstagramGrid() {
+  const { language } = useShop();
+  const t = translations[language].social;
+
   const instagramPosts = [
     { id: 1, image: "/images/collection-men.jpg" },
     { id: 2, image: "/images/products/suit.jpg" },
@@ -18,10 +25,10 @@ export default function InstagramGrid() {
         {/* Title */}
         <div className="text-center space-y-2">
           <span className="text-[10px] sm:text-xs tracking-[0.3em] font-medium text-brand-gold uppercase">
-            Visual Journal
+            {t.subtitle}
           </span>
           <h2 className="font-playfair text-2xl sm:text-4xl tracking-wide uppercase font-medium">
-            Follow Our Journey
+            {t.title}
           </h2>
           <a
             href="https://instagram.com"

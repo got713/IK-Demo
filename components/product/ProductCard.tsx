@@ -16,14 +16,13 @@ interface ProductCardProps {
 export default function ProductCard({ product }: ProductCardProps) {
   const [isHovered, setIsHovered] = useState(false);
   const [isQuickViewOpen, setIsQuickViewOpen] = useState(false);
-  const { toggleWishlist, isInWishlist, addToCart } = useShop();
+  const { toggleWishlist, isInWishlist, addToCart, language } = useShop();
 
   const isFavorite = isInWishlist(product.id);
 
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    // Default to first color and size
     const defaultColor = product.colors[0] || "Default";
     const defaultSize = product.sizes[0] || "One Size";
     addToCart(product, 1, defaultColor, defaultSize);
@@ -39,6 +38,14 @@ export default function ProductCard({ product }: ProductCardProps) {
     e.preventDefault();
     e.stopPropagation();
     setIsQuickViewOpen(true);
+  };
+
+  const getTranslatedCategory = (cat: string) => {
+    if (cat === "Suits") return language === "ar" ? "بدل" : "Suits";
+    if (cat === "Shirts") return language === "ar" ? "قمصان" : "Shirts";
+    if (cat === "Shoes") return language === "ar" ? "أحذية" : "Shoes";
+    if (cat === "Accessories") return language === "ar" ? "إكسسوارات" : "Accessories";
+    return cat;
   };
 
   return (
@@ -62,12 +69,12 @@ export default function ProductCard({ product }: ProductCardProps) {
           <div className="absolute top-3 left-3 flex flex-col gap-1.5 z-10">
             {product.isNew && (
               <span className="bg-brand-gold text-brand-black text-[9px] font-bold tracking-widest px-2.5 py-1 uppercase rounded-sm">
-                New
+                {language === "ar" ? "جديد" : "New"}
               </span>
             )}
             {product.isSale && (
               <span className="bg-white text-brand-black text-[9px] font-bold tracking-widest px-2.5 py-1 uppercase rounded-sm">
-                Sale
+                {language === "ar" ? "خصم" : "Sale"}
               </span>
             )}
           </div>
@@ -76,14 +83,14 @@ export default function ProductCard({ product }: ProductCardProps) {
           <div className="hidden md:flex absolute inset-0 bg-brand-black/30 opacity-0 group-hover:opacity-100 transition-opacity duration-300 items-center justify-center gap-3">
             <button
               onClick={handleQuickView}
-              className="bg-brand-black/80 hover:bg-brand-gold hover:text-brand-black text-brand-off-white p-3 rounded-full transition-all duration-300 transform translate-y-4 group-hover:translate-y-0 shadow-lg border border-brand-gold/10"
+              className="bg-brand-black/80 hover:bg-brand-gold hover:text-brand-black text-brand-off-white p-3 rounded-full transition-all duration-300 transform translate-y-4 group-hover:translate-y-0 shadow-lg border border-brand-gold/10 cursor-pointer"
               title="Quick View"
             >
               <Eye className="w-5 h-5" />
             </button>
             <button
               onClick={handleAddToCart}
-              className="bg-brand-black/80 hover:bg-brand-gold hover:text-brand-black text-brand-off-white p-3 rounded-full transition-all duration-300 transform translate-y-4 group-hover:translate-y-0 delay-75 shadow-lg border border-brand-gold/10"
+              className="bg-brand-black/80 hover:bg-brand-gold hover:text-brand-black text-brand-off-white p-3 rounded-full transition-all duration-300 transform translate-y-4 group-hover:translate-y-0 delay-75 shadow-lg border border-brand-gold/10 cursor-pointer"
               title="Add to Cart"
             >
               <ShoppingBag className="w-5 h-5" />
@@ -104,7 +111,7 @@ export default function ProductCard({ product }: ProductCardProps) {
           {/* Wishlist Button */}
           <button
             onClick={handleWishlistToggle}
-            className={`absolute top-3 right-3 z-10 p-2 rounded-full border transition-all duration-300 ${
+            className={`absolute top-3 right-3 z-10 p-2 rounded-full border transition-all duration-300 cursor-pointer ${
               isFavorite
                 ? "bg-brand-gold/10 border-brand-gold text-brand-gold"
                 : "bg-brand-black/40 border-transparent text-brand-off-white hover:text-brand-gold hover:border-brand-gold/20"
@@ -117,7 +124,9 @@ export default function ProductCard({ product }: ProductCardProps) {
 
         {/* Product Meta Details */}
         <div className="p-4 flex flex-col flex-grow">
-          <p className="text-[10px] tracking-widest text-brand-gray uppercase mb-1">{product.category}</p>
+          <p className="text-[10px] tracking-widest text-brand-gray uppercase mb-1">
+            {getTranslatedCategory(product.category)}
+          </p>
           <Link href={`/product/${product.id}`} className="hover:text-brand-gold transition-colors">
             <h3 className="font-playfair text-sm sm:text-base tracking-wide text-brand-off-white line-clamp-1 mb-2 font-medium">
               {product.name}

@@ -1,7 +1,7 @@
 "use client";
 
 import { use, useState } from "react";
-import Link from "next/link";
+import LinkStandard from "next/link";
 import { products } from "@/data/products";
 import { useShop } from "@/context/ShopContext";
 import { formatCurrency } from "@/lib/formatCurrency";
@@ -10,13 +10,15 @@ import ProductCard from "@/components/product/ProductCard";
 import Button from "@/components/ui/Button";
 import { Heart, Star, Plus, Minus, ChevronDown, ShoppingBag, ArrowLeft } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { translations } from "@/data/translations";
 
 export default function ProductDetailsPage({ params }: { params: Promise<{ id: string }> }) {
   const router = useRouter();
   const resolvedParams = use(params);
   const { id } = resolvedParams;
 
-  const { addToCart, toggleWishlist, isInWishlist } = useShop();
+  const { addToCart, toggleWishlist, isInWishlist, language } = useShop();
+  const t = translations[language].product_page;
 
   // Find product
   const product = products.find((p) => p.id === id);
@@ -30,11 +32,11 @@ export default function ProductDetailsPage({ params }: { params: Promise<{ id: s
   if (!product) {
     return (
       <div className="min-h-screen bg-brand-black text-brand-off-white flex flex-col items-center justify-center pt-24 space-y-4">
-        <h1 className="font-playfair text-3xl">Piece Not Found</h1>
-        <p className="text-brand-gray font-light text-sm">The product you are looking for does not exist in our catalog.</p>
-        <Link href="/shop">
-          <Button variant="primary">Back to Shop</Button>
-        </Link>
+        <h1 className="font-playfair text-3xl">{t.not_found}</h1>
+        <p className="text-brand-gray font-light text-sm">{t.not_found_desc}</p>
+        <LinkStandard href="/shop">
+          <Button variant="primary">{t.back}</Button>
+        </LinkStandard>
       </div>
     );
   }
@@ -65,13 +67,13 @@ export default function ProductDetailsPage({ params }: { params: Promise<{ id: s
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 pt-24 sm:pt-32 font-inter text-brand-off-white">
       {/* Back to Shop Link */}
-      <Link
+      <LinkStandard
         href="/shop"
         className="inline-flex items-center gap-2 text-xs tracking-widest text-brand-gray hover:text-brand-gold uppercase transition-colors mb-10 group"
       >
-        <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
-        Back to Shop
-      </Link>
+        <ArrowLeft className={`w-4 h-4 group-hover:-translate-x-1 transition-transform ${language === "ar" ? "rotate-180" : ""}`} />
+        {t.back}
+      </LinkStandard>
 
       {/* Grid Layout */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 mb-24">
@@ -128,7 +130,7 @@ export default function ProductDetailsPage({ params }: { params: Promise<{ id: s
             {/* Colors */}
             <div className="space-y-3">
               <span className="text-xs tracking-widest text-brand-off-white uppercase font-medium block">
-                Color: {selectedColor}
+                {t.color_lbl}: {selectedColor}
               </span>
               <div className="flex gap-2">
                 {product.colors.map((color) => (
@@ -150,7 +152,7 @@ export default function ProductDetailsPage({ params }: { params: Promise<{ id: s
             {/* Sizes */}
             <div className="space-y-3">
               <span className="text-xs tracking-widest text-brand-off-white uppercase font-medium block">
-                Size: {selectedSize}
+                {t.size_lbl}: {selectedSize}
               </span>
               <div className="flex gap-2 flex-wrap">
                 {product.sizes.map((size) => (
@@ -205,7 +207,7 @@ export default function ProductDetailsPage({ params }: { params: Promise<{ id: s
                 aria-label="Toggle Wishlist"
               >
                 <Heart className={`w-4 h-4 ${isFavorite ? "fill-brand-gold" : ""}`} />
-                <span className="text-xs uppercase tracking-widest sm:hidden">Wishlist</span>
+                <span className="text-xs uppercase tracking-widest sm:hidden">{translations[language].nav.wishlist}</span>
               </button>
             </div>
 
@@ -217,14 +219,14 @@ export default function ProductDetailsPage({ params }: { params: Promise<{ id: s
                 className="flex-1 py-4 text-xs font-semibold"
               >
                 <ShoppingBag className="w-4 h-4 mr-2" />
-                Add to Cart
+                {t.add_to_cart}
               </Button>
               <Button
                 variant="secondary"
                 onClick={handleBuyNow}
                 className="flex-1 py-4 text-xs font-semibold"
               >
-                Buy It Now
+                {t.buy_now}
               </Button>
             </div>
           </div>
@@ -238,7 +240,7 @@ export default function ProductDetailsPage({ params }: { params: Promise<{ id: s
                 className="w-full flex justify-between items-center text-left"
               >
                 <span className="text-xs tracking-widest text-brand-off-white uppercase font-medium">
-                  Product Details
+                  {t.accordion.details_title}
                 </span>
                 <ChevronDown
                   className={`w-4 h-4 text-brand-gold transition-transform duration-300 ${
@@ -248,9 +250,9 @@ export default function ProductDetailsPage({ params }: { params: Promise<{ id: s
               </button>
               {activeAccordion === "details" && (
                 <div className="pt-3 text-xs sm:text-sm text-brand-gray font-light leading-relaxed space-y-2">
-                  <p>• Premium material blend designed for structuring and durability.</p>
-                  <p>• Dry clean only recommended for fine structural integrity.</p>
-                  <p>• Exclusively designed and tailored in the Ibrahim Khoder Atelier, Zamalek, Cairo.</p>
+                  <p>{t.accordion.details_p1}</p>
+                  <p>{t.accordion.details_p2}</p>
+                  <p>{t.accordion.details_p3}</p>
                 </div>
               )}
             </div>
@@ -262,7 +264,7 @@ export default function ProductDetailsPage({ params }: { params: Promise<{ id: s
                 className="w-full flex justify-between items-center text-left"
               >
                 <span className="text-xs tracking-widest text-brand-off-white uppercase font-medium">
-                  Shipping & Delivery
+                  {t.accordion.shipping_title}
                 </span>
                 <ChevronDown
                   className={`w-4 h-4 text-brand-gold transition-transform duration-300 ${
@@ -272,7 +274,7 @@ export default function ProductDetailsPage({ params }: { params: Promise<{ id: s
               </button>
               {activeAccordion === "shipping" && (
                 <div className="pt-3 text-xs sm:text-sm text-brand-gray font-light leading-relaxed">
-                  We offer nationwide delivery across Egypt. Standard shipping rates apply. Delivery typically completed within 2 to 4 business days. Tracked shipping details sent via SMS/Email.
+                  {t.accordion.shipping_desc}
                 </div>
               )}
             </div>
@@ -284,7 +286,7 @@ export default function ProductDetailsPage({ params }: { params: Promise<{ id: s
                 className="w-full flex justify-between items-center text-left"
               >
                 <span className="text-xs tracking-widest text-brand-off-white uppercase font-medium">
-                  Returns & Exchanges
+                  {t.accordion.returns_title}
                 </span>
                 <ChevronDown
                   className={`w-4 h-4 text-brand-gold transition-transform duration-300 ${
@@ -294,7 +296,7 @@ export default function ProductDetailsPage({ params }: { params: Promise<{ id: s
               </button>
               {activeAccordion === "returns" && (
                 <div className="pt-3 text-xs sm:text-sm text-brand-gray font-light leading-relaxed">
-                  Items can be returned or exchanged within 14 days of delivery. The garment must be unworn, unwashed, and retain all original tags and packaging intact. Contact customer care to arrange pickup.
+                  {t.accordion.returns_desc}
                 </div>
               )}
             </div>
@@ -307,10 +309,10 @@ export default function ProductDetailsPage({ params }: { params: Promise<{ id: s
         <div className="border-t border-brand-gold/15 pt-20 space-y-10">
           <div className="text-center space-y-2">
             <span className="text-[10px] tracking-[0.3em] font-medium text-brand-gold uppercase">
-              You May Also Like
+              {t.related_sub}
             </span>
             <h2 className="font-playfair text-xl sm:text-3xl tracking-wide uppercase font-medium">
-              Related Products
+              {t.related_title}
             </h2>
           </div>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6 lg:gap-8">

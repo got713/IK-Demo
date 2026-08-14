@@ -22,6 +22,8 @@ interface ShopContextType {
   isCartOpen: boolean;
   isSearchOpen: boolean;
   toasts: ToastMessage[];
+  language: "en" | "ar";
+  setLanguage: (lang: "en" | "ar") => void;
   addToCart: (product: Product, quantity: number, color: string, size: string) => void;
   removeFromCart: (productId: string, color: string, size: string) => void;
   updateQuantity: (productId: string, color: string, size: string, quantity: number) => void;
@@ -42,12 +44,14 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [isCartOpen, setCartOpen] = useState(false);
   const [isSearchOpen, setSearchOpen] = useState(false);
   const [toasts, setToasts] = useState<ToastMessage[]>([]);
+  const [language, setLanguage] = useState<"en" | "ar">("en");
   const [isHydrated, setIsHydrated] = useState(false);
 
   // Load from localStorage on mount
   useEffect(() => {
     const savedCart = localStorage.getItem("ik_cart");
     const savedWishlist = localStorage.getItem("ik_wishlist");
+    const savedLang = localStorage.getItem("ik_lang") as "en" | "ar";
     if (savedCart) {
       try {
         setCart(JSON.parse(savedCart));
@@ -61,6 +65,11 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
       } catch (e) {
         console.error("Failed to parse wishlist", e);
       }
+    }
+    if (savedLang) {
+      setLanguage(savedLang);
+      document.documentElement.dir = savedLang === "ar" ? "rtl" : "ltr";
+      document.documentElement.lang = savedLang;
     }
     setIsHydrated(true);
   }, []);
@@ -77,6 +86,14 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
       localStorage.setItem("ik_wishlist", JSON.stringify(wishlist));
     }
   }, [wishlist, isHydrated]);
+
+  useEffect(() => {
+    if (isHydrated) {
+      localStorage.setItem("ik_lang", language);
+      document.documentElement.dir = language === "ar" ? "rtl" : "ltr";
+      document.documentElement.lang = language;
+    }
+  }, [language, isHydrated]);
 
   const addToast = (message: string, type: "success" | "info" | "error" = "success") => {
     const id = Date.now().toString();
@@ -171,6 +188,8 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
         isCartOpen,
         isSearchOpen,
         toasts,
+        language,
+        setLanguage,
         addToCart,
         removeFromCart,
         updateQuantity,

@@ -5,18 +5,23 @@ import { X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import Logo from "./Logo";
 
+import { useShop } from "@/context/ShopContext";
+import { translations } from "@/data/translations";
+
 interface MobileMenuProps {
   isOpen: boolean;
   onClose: () => void;
 }
 
 export default function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
+  const { language } = useShop();
+
   const menuLinks = [
-    { label: "Home", href: "/" },
-    { label: "Shop", href: "/shop" },
-    { label: "Collections", href: "/#collections" },
-    { label: "About", href: "/about" },
-    { label: "Contact", href: "/contact" },
+    { label: translations[language].nav.home, href: "/" },
+    { label: translations[language].nav.shop, href: "/shop" },
+    { label: translations[language].nav.collections, href: "/#collections" },
+    { label: translations[language].nav.about, href: "/about" },
+    { label: translations[language].nav.contact, href: "/contact" },
   ];
 
   return (
